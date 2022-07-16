@@ -29,7 +29,7 @@ export class OptionsPanel extends Component {
     this.shadow.innerHTML=
     `<div class="rating">
       <label class="rating__label" for="rating-filter">Рейтинг</label>
-      <input type="range" id="${ratingInputId}" min="1" max="5" step="0.05">
+      <input type="range" id="${ratingInputId}" min="1" max="5" step="0.1">
     </div>`
   }
   connectedCallback(): void {

@@ -1,6 +1,10 @@
 import { ICategory, ProductFilter, SephoraEndpoints, ProductData } from '../interface'
 import { Sephora } from './Sephora'
 
+//No such data in API
+const realizeDates = ['2017','2018','2019','2020','2021','2022'];
+const stockBalance = ['few','in stock','many'];
+
 export const products: Map<string, Product[]> = new Map()
 export class Product {
   constructor(
@@ -20,7 +24,7 @@ export class Product {
       ({
         currentSku: {listPrice}, 
         brandName,
-        image450,
+        image250,
         rating,
         displayName
       }) => 
@@ -29,8 +33,10 @@ export class Product {
         prodArray.push(new Product({
           title: displayName,
           brand: brandName,
-          imageUrl: image450,
+          imageUrl: image250,
           rating: Number(rating),
+          stockBalance: stockBalance[Math.ceil(Math.random()*3)-1],
+          realizeDate: +realizeDates[Math.ceil(Math.random()*6)-1],
           price,
           priceMax
         }))

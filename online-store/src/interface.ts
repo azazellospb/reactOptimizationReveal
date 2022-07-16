@@ -27,6 +27,8 @@ export interface ProductData {
   rating: number
   price: number
   priceMax?: number
+  realizeDate?: number
+  stockBalance?: string
 }
 
 
