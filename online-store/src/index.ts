@@ -2,7 +2,7 @@ import { ProductsZone, BrandsPopulateEvent } from './component/ProductsZone';
 import { CategoryCard, CategorySelectEvent } from './component/CategoryCard';
 import { CategoryZone } from './component/CategoryZone';
 import { ProductCard } from './component/ProductCard';
-import { OptionsPanel, RatingSetEvent, SortingByBrandEvent, SortingByReleaseEvent } from './component/optionsPanel';
+import { OptionsPanel, RatingSetEvent, SortingByBrandEvent, SortingByReleaseEvent, SearchEvent, ResetEvent } from './component/optionsPanel';
 
 window.customElements.define('category-card', CategoryCard);
 window.customElements.define('products-zone', ProductsZone);
@@ -33,6 +33,13 @@ document.addEventListener('brands-populate', (e)=>{
   optionsPanel.brands = brands;
 })
 
+document.addEventListener('search', (e)=>{
+  if (!(e instanceof SearchEvent)) {
+    throw Error('Not a custom event')
+  }
+  const {detail: {search}}= e;
+  productsZone.search = search;
+})
 document.addEventListener('rating-set', (e)=>{
   if (!(e instanceof RatingSetEvent)) {
     throw Error('Not a custom event')

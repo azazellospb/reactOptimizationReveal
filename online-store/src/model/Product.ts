@@ -55,6 +55,7 @@ export class Product {
     const prodAr  = await this.loadProducts(options.category) as [Product[],string[]]
     let prodArr = prodAr[0]
     const brandsArr = prodAr[1] 
+    if (options.search.length !== 0) prodArr = prodArr?.filter(x=> x.data.title.toLowerCase().includes(options.search.toLowerCase()))
     if (typeof options.rating !== 'undefined') prodArr = prodArr?.filter(x=> x.data.rating > options.rating!)
     switch (options.sortByBrand){
       case "1": 

@@ -1,8 +1,10 @@
 import { Component } from './Component'
-import { ProductsZone } from './ProductsZone';
 const ratingInputId = 'rating-input'
 const sorterByBrand = 'sortByBrand'
 const sorterByRelease = 'sortByRelease'
+const searchInput = 'search-input'
+const brands = 'brands'
+const resetBtn = 'reset-btn'
 
 export class RatingSetEvent extends CustomEvent<{rating:number}>{
   constructor(rating: number) {
@@ -22,6 +24,17 @@ export class SortingByBrandEvent extends CustomEvent<{sortByBrandOrder:string}>{
     })
   }
 }
+export class SearchEvent extends CustomEvent<{search:string}>{
+  constructor(search: string) {
+    super('search', {
+      bubbles: true,
+      composed: true,
+      detail: {search}
+    })
+  }
+}
+
+
 export class SortingByReleaseEvent extends CustomEvent<{sortByReleaseOrder:string}>{
   constructor(sortByReleaseOrder: string) {
     super('releasesort-set', {
@@ -33,11 +46,13 @@ export class SortingByReleaseEvent extends CustomEvent<{sortByReleaseOrder:strin
 }
 export class OptionsPanel extends Component {
   private ratingInput: HTMLInputElement | null = null
+  private brandsContainer: HTMLElement | null = null
+  private resetBtn: HTMLButtonElement | null = null
+  private searchInput: HTMLInputElement | null = null
   private brandSortOrder: HTMLSelectElement | null = null
   private releaseSortOrder: HTMLSelectElement | null = null
   public productsByBrand: string[] = [];
   public _brands: string[] = [];
-  private _category = "cat140006"
   constructor() {
     super()
   }
@@ -74,11 +89,15 @@ export class OptionsPanel extends Component {
   }
   set brands(value) {
     this._brands = value;
-    this.render(); 
+    const brandsContainer = this.brandsContainer as HTMLElement;
+    brandsContainer.innerHTML = this._brands.map(name=>`<button class='btn brand-filter'>${name}</button>`).join('')
   }
+
   render() {
     this.shadow.innerHTML=
     `<div class="rating">
+      <label class="search__label" for="search-input">Search field: </label>
+      <input id="${searchInput}" type="search" placeholder="search product by input" autocomplete="off" autofocus>
       <label class="rating__label" for="rating-filter">Рейтинг</label>
       <input type="range" id="${ratingInputId}" min="1" max="5" step="0.1">
       <label for="brandSort">Sort by brand:</label>
@@ -94,22 +113,31 @@ export class OptionsPanel extends Component {
         <option value="-1">descending order</option>
       </select>
       <br>
-      <div class="button container">
-      ${this._brands.map(name=>`<button class='btn brand-filter'>${name}</button>`).join('')}
+      <div id="brands">
       </div>
     </div>`
   }
   connectedCallback(): void {
     this.render()
+
+    this.brandsContainer = this.getElementById(brands)
+
+    this.searchInput = this.getElementById(searchInput) as HTMLInputElement
+    this.searchInput.addEventListener('input', ()=>{
+      const searchInputField = this.searchInput?.value || "" 
+      this.dispatchEvent(new SearchEvent(searchInputField))
+      })
     this.ratingInput = this.getElementById(ratingInputId) as HTMLInputElement
-    this.brandSortOrder = this.getElementById(sorterByBrand) as HTMLSelectElement
-    this.releaseSortOrder = this.getElementById(sorterByRelease) as HTMLSelectElement
-    this.brandSortOrder.addEventListener('input', ()=>{
-      this.sortByBrandOrder = this.brandSortOrder?.value || "0" })
-    this.releaseSortOrder.addEventListener('input', ()=>{
-      this.sortByReleaseOrder = this.releaseSortOrder?.value || "0" })
     this.ratingInput.addEventListener('input', ()=>
     { this.rating = this.ratingInput?.value || "" })
+
+    this.brandSortOrder = this.getElementById(sorterByBrand) as HTMLSelectElement 
+    this.brandSortOrder.addEventListener('input', ()=>{
+      this.sortByBrandOrder = this.brandSortOrder?.value || "0" })
+  
+    this.releaseSortOrder = this.getElementById(sorterByRelease) as HTMLSelectElement
+    this.releaseSortOrder.addEventListener('input', ()=>{
+      this.sortByReleaseOrder = this.releaseSortOrder?.value || "0" })
   }
   
 }

@@ -9,7 +9,7 @@ export abstract class Component extends HTMLElement {
     this.shadow = this.attachShadow({mode: 'open'})
   }
   getElement(selector:string) {
-    const element = this.shadowRoot?.querySelector(selector)
+    const element = this.shadow.querySelector(selector)
     if (!element) throw Error(`Couldn't find an element with ${selector} selector`)
     return element as HTMLElement
   }

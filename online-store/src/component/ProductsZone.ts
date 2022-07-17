@@ -19,6 +19,7 @@ export class ProductsZone extends Component {
   private _category = "cat140006"
   private _sortByBrandOrder = "0"
   private _sortByReleaseOrder = "0"
+  private _search = ""
   async render(){
     this.shadow.innerHTML = ""
     const fragment = document.createDocumentFragment()
@@ -27,8 +28,14 @@ export class ProductsZone extends Component {
       rating: this._rating,
       sortByBrand: this._sortByBrandOrder,
       sortByRelease: this._sortByReleaseOrder,
+      search: this._search,
     })
+
     const data = modelData[0]
+    if (data.length == 0) {
+      const noData = document.createElement('p');
+      noData.innerText = 'Sorry, such products do not exist!'
+      fragment.append(noData)}
     data.forEach(item => {
       const element = new ProductCard(item)
       element.render()
@@ -38,7 +45,7 @@ export class ProductsZone extends Component {
     this.dispatchEvent (new BrandsPopulateEvent(modelData[1]))
   }
   static get observedAttributes() {
-    return ['rating', ' category', 'sortByBrandOrder','sortByReleaseOrder']
+    return ['rating', ' category', 'sortByBrandOrder','sortByReleaseOrder', 'search']
   }
   attributeChangedCallback(prop:string) {
     if (prop === 'category') this.render().catch((err)=>console.log(err))
@@ -57,6 +64,13 @@ export class ProductsZone extends Component {
   set sortByReleaseOrder(value: string) {
     this._sortByReleaseOrder = value
     this.render().catch((err)=>console.log(err))
+  }
+  set search(value: string) {
+    this._search = value
+    this.render().catch((err)=>console.log(err))
+  }
+  get search(){
+    return this._search;
   }
 
   get category() {

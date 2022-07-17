@@ -20,6 +20,7 @@ export interface ProductFilter {
   rating?: number
   sortByBrand: string
   sortByRelease: string
+  search: string
 }
 
 export interface ProductData {
