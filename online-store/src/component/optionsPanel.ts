@@ -89,9 +89,15 @@ export class OptionsPanel extends Component {
     `<div class="rating">
       <label class="search__label" for="search-input">Search field: </label>
       <input id="${searchInput}" type="search" placeholder="search product by input" autocomplete="off" autofocus>
-      <label class="rating__label" for="rating-filter">Рейтинг</label>
-      <input type="range" id="${ratingInputId}" min="1" max="5" step="0.1">
-      <label for="brandSort">Sort by brand:</label>
+      
+
+ 
+      <form>
+      <label class="rating__label" for="rating-filter">Rating (from 1 to 5)</label>
+      <input type="range" id="${ratingInputId}" min="1" max="5" step="0.1" oninput="this.nextElementSibling.value = this.value">
+      <output name="ratingRangeOutput" id="ratingRangeOutput">1</output>
+      </form>
+      <label for="brandSort">Sort by name:</label>
       <select name="brandSort" id="sortByBrand">
         <option value="0">-</option>
         <option value="1">ascending order</option>
@@ -116,6 +122,13 @@ export class OptionsPanel extends Component {
       this.reset()
     })
     this.brandsContainer = this.getElementById(brands)
+    this.brandsContainer?.addEventListener('click', (e) =>{
+      const btn = e.target as HTMLButtonElement;
+      const brandName = btn.innerText || "";
+      console.log(brandName);
+      this.dispatchEvent(new OptionsUpdateEvent({brand:brandName}))
+    }
+    )
 
     this.searchInput = this.getElementById(searchInput) as HTMLInputElement
     this.searchInput.addEventListener('input', ()=>{

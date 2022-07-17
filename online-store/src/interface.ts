@@ -31,6 +31,7 @@ export interface FilterOptions {
   sortByBrandOrder:string
   search:string
   sortByReleaseOrder:string
+  brand: string
 }
 
 

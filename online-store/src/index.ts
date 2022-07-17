@@ -20,7 +20,8 @@ let options: FilterOptions = {
   category: "cat140006",
   sortByBrandOrder: "0",
   sortByReleaseOrder: "0",
-  search: ""
+  search: "",
+  brand: ""
 }
 optionsPanel.rating = options.rating;
 optionsPanel.sortByBrandOrder = options.sortByBrandOrder;
