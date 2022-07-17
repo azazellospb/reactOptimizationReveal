@@ -1,5 +1,7 @@
 import { FilterOptions } from '../interface'
 import { Component } from './Component'
+
+//Tag's DOM elements id's group
 const ratingInputId = 'rating-input'
 const sorterByBrand = 'sortByBrand'
 const sorterByRelease = 'sortByRelease'
@@ -108,7 +110,7 @@ export class OptionsPanel extends Component {
     </div>`
   }
   connectedCallback(): void {
-    this.render()
+    super.connectedCallback();
     this.resetBtn = this.getElementById(resetBtn) as HTMLButtonElement 
     this.resetBtn?.addEventListener('click', ()=> {
       this.reset()

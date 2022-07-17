@@ -23,7 +23,7 @@ export class ProductCard extends Component {
     </div>`
   }
   connectedCallback() {
-    this.render()
+    super.connectedCallback()
   }
 }
 

@@ -10,7 +10,7 @@ export class CategoryCard extends Component {
     super()
     }
   connectedCallback() {
-    this.render();
+    super.connectedCallback()
     this.getElement('.category__btn').addEventListener('click', () => {
       this.dispatchEvent(new OptionsUpdateEvent({category: this.data.categoryId}))
     })
