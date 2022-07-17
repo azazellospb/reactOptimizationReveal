@@ -1,8 +1,10 @@
-import { ProductsZone, BrandsPopulateEvent } from './component/ProductsZone';
-import { CategoryCard, CategorySelectEvent } from './component/CategoryCard';
+import { ProductsZone } from './component/ProductsZone';
+import { CategoryCard } from './component/CategoryCard';
 import { CategoryZone } from './component/CategoryZone';
 import { ProductCard } from './component/ProductCard';
-import { OptionsPanel, RatingSetEvent, SortingByBrandEvent, SortingByReleaseEvent, SearchEvent, ResetEvent } from './component/optionsPanel';
+import { OptionsPanel, OptionsUpdateEvent } from './component/optionsPanel';
+import { FilterOptions } from './interface';
+import { Product } from './model/Product';
 
 window.customElements.define('category-card', CategoryCard);
 window.customElements.define('products-zone', ProductsZone);
@@ -12,52 +14,33 @@ window.customElements.define('options-panel', OptionsPanel);
 
 const productsZone = document.querySelector('products-zone') as ProductsZone;
 const optionsPanel = document.querySelector('options-panel') as OptionsPanel;
-optionsPanel.rating = "1";
-optionsPanel.sortByBrandOrder = "0";
-optionsPanel.sortByReleaseOrder = "0";
+
+let options: FilterOptions = { 
+  rating: 1,
+  category: "cat140006",
+  sortByBrandOrder: "0",
+  sortByReleaseOrder: "0",
+  search: ""
+}
+optionsPanel.rating = options.rating;
+optionsPanel.sortByBrandOrder = options.sortByBrandOrder;
+optionsPanel.sortByReleaseOrder = options.sortByReleaseOrder;
 
 
-document.addEventListener('category-select', (e)=>{
-  if (!(e instanceof CategorySelectEvent)) {
-    throw Error('Not a custom event')
+document.addEventListener('options-update', (e)=>{
+  if (!(e instanceof OptionsUpdateEvent)) {
+    throw Error('Expected options update event')
   }
-  const {detail: {id}}= e;
-  productsZone.category = id;
+  const {detail} = e
+  options = Object.assign(options, detail) // merge options by rewriting updated ones
+  reloadProducts().catch((e)=>{throw e});
+
 })
 
-document.addEventListener('brands-populate', (e)=>{
-  if (!(e instanceof BrandsPopulateEvent)) {
-    throw Error('Not a custom event')
-  }
-  const {detail: {brands}}= e;
-  optionsPanel.brands = brands;
-})
 
-document.addEventListener('search', (e)=>{
-  if (!(e instanceof SearchEvent)) {
-    throw Error('Not a custom event')
-  }
-  const {detail: {search}}= e;
-  productsZone.search = search;
-})
-document.addEventListener('rating-set', (e)=>{
-  if (!(e instanceof RatingSetEvent)) {
-    throw Error('Not a custom event')
-  }
-  const {detail: {rating}}= e;
-  productsZone.rating = rating;
-})
-document.addEventListener('brandsort-set', (e)=>{
-  if (!(e instanceof SortingByBrandEvent)) {
-    throw Error('Not a custom event')
-  }
-  const {detail: {sortByBrandOrder}}= e;
-  productsZone.sortByBrandOrder = sortByBrandOrder;
-})
-document.addEventListener('releasesort-set', (e)=>{
-  if (!(e instanceof SortingByReleaseEvent)) {
-    throw Error('Not a custom event')
-  }
-  const {detail: {sortByReleaseOrder}}= e;
-  productsZone.sortByReleaseOrder = sortByReleaseOrder;
-})
+async function reloadProducts () {
+  const [products, brands] = await Product.filterProducts(options)
+  optionsPanel.brands = brands
+  productsZone.products = products
+}
+reloadProducts().catch((e)=>{throw e});

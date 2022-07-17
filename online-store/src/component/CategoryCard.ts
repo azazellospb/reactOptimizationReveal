@@ -1,16 +1,7 @@
 
 import { ICategory } from './../interface'
 import { Component } from "./Component"
-
-export class CategorySelectEvent extends CustomEvent<{id:string}>{
-  constructor(id: string) {
-    super('category-select', {
-      bubbles: true,
-      composed: true,
-      detail: {id}
-    })
-  }
-}
+import { OptionsUpdateEvent } from './optionsPanel';
 
 export class CategoryCard extends Component {
   constructor(
@@ -21,7 +12,7 @@ export class CategoryCard extends Component {
   connectedCallback() {
     this.render();
     this.getElement('.category__btn').addEventListener('click', () => {
-      this.dispatchEvent(new CategorySelectEvent(this.data.categoryId))
+      this.dispatchEvent(new OptionsUpdateEvent({category: this.data.categoryId}))
     })
   }
   render() {

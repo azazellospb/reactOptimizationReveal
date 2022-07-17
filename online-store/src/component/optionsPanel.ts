@@ -1,3 +1,4 @@
+import { FilterOptions } from '../interface'
 import { Component } from './Component'
 const ratingInputId = 'rating-input'
 const sorterByBrand = 'sortByBrand'
@@ -6,41 +7,12 @@ const searchInput = 'search-input'
 const brands = 'brands'
 const resetBtn = 'reset-btn'
 
-export class RatingSetEvent extends CustomEvent<{rating:number}>{
-  constructor(rating: number) {
-    super('rating-set', {
+export class OptionsUpdateEvent extends CustomEvent<Partial<FilterOptions>>{
+  constructor(options: Partial<FilterOptions>) {
+    super('options-update', {
       bubbles: true,
       composed: true,
-      detail: {rating}
-    })
-  }
-}
-export class SortingByBrandEvent extends CustomEvent<{sortByBrandOrder:string}>{
-  constructor(sortByBrandOrder: string) {
-    super('brandsort-set', {
-      bubbles: true,
-      composed: true,
-      detail: {sortByBrandOrder}
-    })
-  }
-}
-export class SearchEvent extends CustomEvent<{search:string}>{
-  constructor(search: string) {
-    super('search', {
-      bubbles: true,
-      composed: true,
-      detail: {search}
-    })
-  }
-}
-
-
-export class SortingByReleaseEvent extends CustomEvent<{sortByReleaseOrder:string}>{
-  constructor(sortByReleaseOrder: string) {
-    super('releasesort-set', {
-      bubbles: true,
-      composed: true,
-      detail: {sortByReleaseOrder}
+      detail: options
     })
   }
 }
@@ -51,6 +23,7 @@ export class OptionsPanel extends Component {
   private searchInput: HTMLInputElement | null = null
   private brandSortOrder: HTMLSelectElement | null = null
   private releaseSortOrder: HTMLSelectElement | null = null
+  public defaultOptions: Pick<FilterOptions, "rating" | "search"> = {rating: 1, search: ""}
   public productsByBrand: string[] = [];
   public _brands: string[] = [];
   constructor() {
@@ -63,7 +36,7 @@ export class OptionsPanel extends Component {
   set rating(value: string | number) {
     const input = this.ratingInput as HTMLInputElement
     input.value = value.toString() || ''
-    this.dispatchEvent(new RatingSetEvent(+input.value))
+    this.dispatchEvent(new OptionsUpdateEvent({rating: +input.value}))
   }
   get sortByBrandOrder() {
     return this.brandSortOrder?.value || ""
@@ -71,7 +44,7 @@ export class OptionsPanel extends Component {
   set sortByBrandOrder(value: string | number) {
     const input = this.brandSortOrder as HTMLSelectElement
     input.value = value.toString() || ''
-    this.dispatchEvent(new SortingByBrandEvent(input.value))
+    this.dispatchEvent(new OptionsUpdateEvent({sortByBrandOrder: input.value}))
   }
   get sortByReleaseOrder() {
     return this.releaseSortOrder?.value || ""
@@ -79,7 +52,7 @@ export class OptionsPanel extends Component {
   set sortByReleaseOrder(value: string | number) {
     const input = this.releaseSortOrder as HTMLSelectElement
     input.value = value.toString() || ''
-    this.dispatchEvent(new SortingByReleaseEvent(input.value))
+    this.dispatchEvent(new OptionsUpdateEvent({sortByReleaseOrder: input.value}))
   }
   static get observedAttributes() {
     return ['category', 'brands']
@@ -92,7 +65,23 @@ export class OptionsPanel extends Component {
     const brandsContainer = this.brandsContainer as HTMLElement;
     brandsContainer.innerHTML = this._brands.map(name=>`<button class='btn brand-filter'>${name}</button>`).join('')
   }
+  get search() {
+    return this.searchInput?.value;
+  }
+  set search(value) {
+    const searchInput = this.searchInput as HTMLInputElement
+    searchInput.value = value || '';
+  }
+  reset() {
+    const {
+      rating,
+      search
+    } = this.defaultOptions
+    this.rating = rating;
+    this.search = search;
 
+    this.dispatchEvent(new OptionsUpdateEvent({search, rating}))
+  }
   render() {
     this.shadow.innerHTML=
     `<div class="rating">
@@ -115,17 +104,21 @@ export class OptionsPanel extends Component {
       <br>
       <div id="brands">
       </div>
+      <button id = ${resetBtn}>Reset filters</button>
     </div>`
   }
   connectedCallback(): void {
     this.render()
-
+    this.resetBtn = this.getElementById(resetBtn) as HTMLButtonElement 
+    this.resetBtn?.addEventListener('click', ()=> {
+      this.reset()
+    })
     this.brandsContainer = this.getElementById(brands)
 
     this.searchInput = this.getElementById(searchInput) as HTMLInputElement
     this.searchInput.addEventListener('input', ()=>{
       const searchInputField = this.searchInput?.value || "" 
-      this.dispatchEvent(new SearchEvent(searchInputField))
+      this.dispatchEvent(new OptionsUpdateEvent({search:searchInputField}))
       })
     this.ratingInput = this.getElementById(ratingInputId) as HTMLInputElement
     this.ratingInput.addEventListener('input', ()=>

@@ -15,14 +15,6 @@ export interface IProduct {
 // Alias type
 export type CategorySelectEvent = CustomEvent<{id:string}>
 
-export interface ProductFilter {
-  category: string
-  rating?: number
-  sortByBrand: string
-  sortByRelease: string
-  search: string
-}
-
 export interface ProductData {
   title: string
   brand: string
@@ -32,6 +24,13 @@ export interface ProductData {
   priceMax?: number
   releaseDate: number
   stockBalance: string
+}
+export interface FilterOptions {
+  rating:number
+  category: string
+  sortByBrandOrder:string
+  search:string
+  sortByReleaseOrder:string
 }
 
 

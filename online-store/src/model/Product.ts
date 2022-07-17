@@ -1,10 +1,9 @@
-import { ICategory, ProductFilter, SephoraEndpoints, ProductData } from '../interface'
+import { ICategory, FilterOptions, SephoraEndpoints, ProductData } from '../interface'
 import { Sephora } from './Sephora'
 
 //No such data in API
 const releaseDates = ['2017','2018','2019','2020','2021','2022'];
 const stockBalance = ['few','in stock','many'];
-// export const brands: string[] = []
 
 const brands: Map<string, string[]> = new Map()
 const products: Map<string, Product[]> = new Map()
@@ -51,13 +50,13 @@ export class Product {
     return [prodArray, brandArray]
   }
 
-  static async filterProducts(options: ProductFilter): Promise<[Product[], string[]]> {
+  static async filterProducts(options: FilterOptions): Promise<[Product[], string[]]> {
     const prodAr  = await this.loadProducts(options.category) as [Product[],string[]]
     let prodArr = prodAr[0]
     const brandsArr = prodAr[1] 
     if (options.search.length !== 0) prodArr = prodArr?.filter(x=> x.data.title.toLowerCase().includes(options.search.toLowerCase()))
-    if (typeof options.rating !== 'undefined') prodArr = prodArr?.filter(x=> x.data.rating > options.rating!)
-    switch (options.sortByBrand){
+    prodArr = prodArr?.filter(x=> x.data.rating > options.rating)
+    switch (options.sortByBrandOrder){
       case "1": 
       prodArr = prodArr?.sort((a,b)=>(b.data.brand<a.data.brand ? 1 : b.data.brand>a.data.brand ? -1 :0))
       break;
@@ -66,7 +65,7 @@ export class Product {
       break;
       default: break;
     }
-    switch (options.sortByRelease){
+    switch (options.sortByReleaseOrder){
       case "1": 
       prodArr = prodArr?.sort((a,b)=>(b.data.releaseDate<a.data.releaseDate ? 1 : b.data.releaseDate>a.data.releaseDate ? -1 :0))
       break;
