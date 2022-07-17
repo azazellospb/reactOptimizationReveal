@@ -17,7 +17,9 @@ export type CategorySelectEvent = CustomEvent<{id:string}>
 
 export interface ProductFilter {
   category: string
-  rating?: number 
+  rating?: number
+  sortByBrand: string
+  sortByRelease: string
 }
 
 export interface ProductData {
@@ -27,8 +29,8 @@ export interface ProductData {
   rating: number
   price: number
   priceMax?: number
-  realizeDate?: number
-  stockBalance?: string
+  releaseDate: number
+  stockBalance: string
 }
 
 
