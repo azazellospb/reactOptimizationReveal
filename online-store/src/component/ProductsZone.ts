@@ -3,15 +3,7 @@ import { Product } from './../model/Product'
 import { ProductCard } from './ProductCard'
 
 
-export class BrandsPopulateEvent extends CustomEvent<{brands:string[]}>{
-  constructor(brands: string[]) {
-    super('brands-populate', {
-      bubbles: true,
-      composed: true,
-      detail: {brands}
-    })
-  }
-}
+
 export class ProductsZone extends Component {
   private _products:Product[] = []   
 
