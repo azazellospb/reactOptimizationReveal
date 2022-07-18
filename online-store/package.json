@@ -23,7 +23,8 @@
     "Bootstrap"
   ],
   "eslintignore": [
-    "./webpack.config.js"
+    "./webpack.config.js",
+    "./noUiSlider/noUiSlider.js"
   ],
   "author": "Anton Ivanov",
   "license": "ISC",

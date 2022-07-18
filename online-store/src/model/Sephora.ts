@@ -6,7 +6,7 @@ export class Sephora {
     private static options = {
         method: 'GET',
         headers: {
-            'X-RapidAPI-Key': '3b9a3d512fmshd8a8642d1524aa7p146d05jsn399e169cda6e',
+            'X-RapidAPI-Key': '715cdd7baemshebc3d6b2e27d381p176df1jsnd7252b7ea217',
             'X-RapidAPI-Host': 'sephora.p.rapidapi.com'
         }
     }
@@ -15,7 +15,10 @@ export class Sephora {
         return fetch(this.makeUrl(queryPath, endpoint), this.options)
         .then(this.errorHandler.bind(this))
         .then((res) => res.json())
-        .catch((err) => console.error(err))
+        .catch(() => console.error(` Здравствуйте! В проекте использовался freemeum API (для карточек товаров) с лимитом в 500 запросов в месяц.
+        Если товары перестанут грузиться, то ключ можно получить по ссылке (зайти через google и нажать Subscribe to test):
+        https://rapidapi.com/apidojo/api/sephora/ (указан в разделе Header Parameters и используется для параметра X-RapidAPI-Key в модели Sephora.ts).
+        После истечения лимита никаких платежей не будет, просто пойдут ошибки при загрузке (сталкивался неоднократно)`))
     }
     static errorHandler(res: Response) 
     {

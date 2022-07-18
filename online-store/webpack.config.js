@@ -31,6 +31,9 @@ const baseConfig = {
         filename: 'index.js',
         path: path.resolve(__dirname, './dist'),
     },
+    devServer: {
+        hot: false, // disable hot reload
+    },
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html'),
