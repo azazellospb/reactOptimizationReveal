@@ -18,16 +18,32 @@ export class OptionsUpdateEvent extends CustomEvent<Partial<FilterOptions>>{
     })
   }
 }
+export class ResetStorageEvent extends CustomEvent<{toReset: boolean}>{
+  constructor(toReset: boolean) {
+    super('reset-storage', {
+      bubbles: true,
+      composed: true,
+      detail: {toReset}
+    })
+  }
+}
+
+
+
 export class OptionsPanel extends Component {
   private ratingInput: HTMLInputElement | null = null
+  private outPut: HTMLOutputElement | null = null
   private brandsContainer: HTMLElement | null = null
   private resetBtn: HTMLButtonElement | null = null
   private searchInput: HTMLInputElement | null = null
   private brandSortOrder: HTMLSelectElement | null = null
+  private resetStorageBtn: HTMLButtonElement | null = null
   private releaseSortOrder: HTMLSelectElement | null = null
-  public defaultOptions: Pick<FilterOptions, "rating" | "search"> = {rating: 1, search: ""}
-  public productsByBrand: string[] = [];
-  public _brands: string[] = [];
+  public defaultOptions: Pick<FilterOptions, "rating" | "search" | "brand"> = {rating: 1, search: "", brand: "" }
+  public productsByBrand: string[] = []
+  public _brands: string[] = []
+  private _currentBrand= ""
+
   constructor() {
     super()
   }
@@ -39,6 +55,15 @@ export class OptionsPanel extends Component {
     const input = this.ratingInput as HTMLInputElement
     input.value = value.toString() || ''
     this.dispatchEvent(new OptionsUpdateEvent({rating: +input.value}))
+  }
+
+
+
+  get currentBrand() {
+    return this._currentBrand
+  }
+  set currentBrand(value: string){
+    this.dispatchEvent(new OptionsUpdateEvent({brand: value}))
   }
   get sortByBrandOrder() {
     return this.brandSortOrder?.value || ""
@@ -79,31 +104,81 @@ export class OptionsPanel extends Component {
       rating,
       search
     } = this.defaultOptions
-    this.rating = rating;
-    this.search = search;
-
+    this.rating = rating
+    this.search = search
+    const output = this.outPut as HTMLOutputElement
+    output.value = '1'
     this.dispatchEvent(new OptionsUpdateEvent({search, rating}))
   }
   render() {
     this.shadow.innerHTML=
-    `<div class="rating">
-      <label class="search__label" for="search-input">Search field: </label>
-      <input id="${searchInput}" type="search" placeholder="search product by input" autocomplete="off" autofocus>
+    `
+    <style>
+    *{
+      font-family: 'Finger Paint', cursive;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Finger+Paint&display=swap');
+    .optionPanel {
+      padding: 20px;  
+      margin-top: 20px;
+      display: flex;
+      gap: 1em;
+      flex-wrap: wrap;
+      border: 0.5rem dashed black;
+      background: #ffb3b3
+      border-radius: 5%;
+    }
+    #resetStorage,
+    .brand-filter,
+    #${resetBtn} {
+      background: #edc0af;
+      border-radius: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      box-shadow: 0 0.7rem 1.2rem rgba(75, 75, 75, 0.5);
+      transition: .1s ease-out all;
+    }
+    #resetStorage:hover,
+    .brand-filter:hover,
+    #${resetBtn}:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0.7rem 1.2rem rgba(0,0,0,.2);
+    }
+    #resetStorage:active,
+    .brand-filter:active, 
+    #${resetBtn}:active {
+      transform: scale(1.00);
+      box-shadow: 0 0.2rem 0.2rem rgba(0,0,0,.8);
+    }
+    #${resetBtn}, #resetStorage {
+      background: #ff5757;
+    }  
+    #brands {
+      display:flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    </style> 
+    
+    
+    <div class="optionPanel">
+      <label class="search__label" for="search-input"><b>Search field: </b></label>
+      <input id="${searchInput}" type="search" placeholder="input request" autocomplete="off" autofocus>
       
 
  
       <form>
-      <label class="rating__label" for="rating-filter">Rating (from 1 to 5)</label>
+      <label class="rating__label" for="rating-filter"><b>Rating (from 1 to 5):</b></label>
       <input type="range" id="${ratingInputId}" min="1" max="5" step="0.1" oninput="this.nextElementSibling.value = this.value">
       <output name="ratingRangeOutput" id="ratingRangeOutput">1</output>
       </form>
-      <label for="brandSort">Sort by name:</label>
+      <label for="brandSort"><b>Sort by name:</b></label>
       <select name="brandSort" id="sortByBrand">
         <option value="0">-</option>
         <option value="1">ascending order</option>
         <option value="-1">descending order</option>
       </select>
-      <label for="releaseSort">Sort by release date:</label>
+      <label for="releaseSort"><b>Sort by release date:</b></label>
       <select name="releaseSort" id="sortByRelease">
         <option value="0">-</option>
         <option value="1">ascending order</option>
@@ -112,7 +187,8 @@ export class OptionsPanel extends Component {
       <br>
       <div id="brands">
       </div>
-      <button id = ${resetBtn}>Reset filters</button>
+      <button id="${resetBtn}">Reset filters</button>
+      <button id ="resetStorage">Reset storage</button>
     </div>`
   }
   connectedCallback(): void {
@@ -121,11 +197,16 @@ export class OptionsPanel extends Component {
     this.resetBtn?.addEventListener('click', ()=> {
       this.reset()
     })
+    this.resetStorageBtn = this.getElementById('resetStorage') as HTMLButtonElement 
+    this.resetStorageBtn?.addEventListener('click', ()=> {
+      this.dispatchEvent(new ResetStorageEvent(true))
+    })
+
     this.brandsContainer = this.getElementById(brands)
     this.brandsContainer?.addEventListener('click', (e) =>{
       const btn = e.target as HTMLButtonElement;
       const brandName = btn.innerText || "";
-      console.log(brandName);
+      this.currentBrand = brandName;
       this.dispatchEvent(new OptionsUpdateEvent({brand:brandName}))
     }
     )
@@ -136,6 +217,7 @@ export class OptionsPanel extends Component {
       this.dispatchEvent(new OptionsUpdateEvent({search:searchInputField}))
       })
     this.ratingInput = this.getElementById(ratingInputId) as HTMLInputElement
+    this.outPut = this.getElementById('ratingRangeOutput') as HTMLOutputElement
     this.ratingInput.addEventListener('input', ()=>
     { this.rating = this.ratingInput?.value || "" })
 

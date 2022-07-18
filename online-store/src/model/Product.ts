@@ -56,7 +56,7 @@ export class Product {
     const brandsArr = prodAr[1] 
     if (options.search.length !== 0) prodArr = prodArr?.filter(x=> x.data.title.toLowerCase().includes(options.search.toLowerCase()))
     prodArr = prodArr?.filter(x=> x.data.rating > options.rating)
-    if (options.brand !== "")prodArr = prodArr?.filter(x=> x.data.brand == options.brand)
+    if (options.brand !== "")prodArr = prodArr?.filter(x=> x.data.brand.toLowerCase() == options.brand.toLowerCase())
     switch (options.sortByBrandOrder){
       case "1": 
       prodArr = prodArr?.sort((a,b)=>(b.data.title<a.data.title ? 1 : b.data.title>a.data.title ? -1 :0))

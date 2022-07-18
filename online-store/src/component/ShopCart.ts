@@ -1,6 +1,6 @@
 import { Component } from "./Component"
 
-const cartLimit = 5
+const cartLimit = 10
 export class CartFeedback extends CustomEvent<{added:boolean, productId: string}> {
   constructor(added: boolean, productId: string) {
     super('cart-feedback', {

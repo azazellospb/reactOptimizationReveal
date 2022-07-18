@@ -10,14 +10,17 @@ export class ProductsZone extends Component {
   render(){
     this.shadow.innerHTML = `
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Finger+Paint&display=swap');
     .wrapper {
       margin-top: 20px;
       display: flex;
       gap: 2em;
       flex-wrap: wrap;
+      justify-content: space-around;
     }
     .wrapper > * {
-      background: #ebeded;
+      font-family: 'Finger Paint', cursive;
+      background: #edc0af;
       border-radius: 5%;
       width: 30%;
       font-style: italic;
@@ -40,6 +43,7 @@ export class ProductsZone extends Component {
     wrapper.innerHTML = ``
     if (this.products.length == 0) {
       const noData = document.createElement('p')
+      noData.style.background='transparent'
       noData.innerText = 'Sorry, such products do not exist!'
       wrapper.append(noData)
     }

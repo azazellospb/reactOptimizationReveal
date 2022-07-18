@@ -5,8 +5,8 @@ export class Sephora {
     private static  baseLink = 'https://sephora.p.rapidapi.com/'
     private static options = {
         method: 'GET',
-        headers: {
-            'X-RapidAPI-Key': '715cdd7baemshebc3d6b2e27d381p176df1jsnd7252b7ea217',
+        headers: { //715cdd7baemshebc3d6b2e27d381p176df1jsnd7252b7ea217
+            'X-RapidAPI-Key': '33cdacee7bmshdd257ed164b2ff0p1f2728jsnd7d011fe448c',
             'X-RapidAPI-Host': 'sephora.p.rapidapi.com'
         }
     }
