@@ -52,7 +52,8 @@ export class ShopCart extends Component {
   }
   feedback (added:boolean, productId: string){
     const cartFull = this.shadow.querySelector('.cart-full') as HTMLElement
-    cartFull.classList.toggle('show', this._products.size >=cartLimit)
+    if (this._products.size >=cartLimit) cartFull.classList.add('show')
+    if (this._products.size >=cartLimit) alert ('Cart is full!')
     const output = this._output as HTMLOutputElement
     output.innerText = this._products.size.toString()
     this.dispatchEvent(new CartFeedback(added, productId))

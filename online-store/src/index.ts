@@ -28,7 +28,7 @@ let options: FilterOptions = {
   search: "",
   brand: ""
 }
-
+const inCartprod: Set<string> = new Set();
 optionsPanel.rating = options.rating
 optionsPanel.search = options.search
 optionsPanel.currentBrand = options.search
@@ -43,8 +43,8 @@ document.addEventListener('options-update', (e)=>{
   }
   const {detail} = e
   options = Object.assign(options, detail) // rewriting updated properties by merge
-  localStorage.setItem('options', JSON.stringify(options))
   reloadProducts().catch((e)=>{throw e})
+  localStorage.setItem('options', JSON.stringify(options))
 })
 
 document.addEventListener('cart-toggle', (e)=>{
@@ -61,6 +61,10 @@ document.addEventListener('cart-feedback', (e)=>{
   }
   const {added, productId} = e.detail
   const inCart = localStorage.getItem('inCart') as string
+  const card = productsZone.findProductCard(productId)
+  card.cart = added
+  if (added) inCartprod.add(productId);
+  if (!added) inCartprod.delete(productId);
   if (added && inCart.indexOf(productId) == -1) {
     localStorage.setItem('inCart', `${inCart}/${productId}`)
   }
@@ -87,6 +91,11 @@ async function reloadProducts () {
   const [products, brands] = await Product.filterProducts(options)
   optionsPanel.brands = brands
   productsZone.products = products
+  inCartprod.forEach((productId)=>{
+    const card = productsZone.findProductCard(productId);
+    card.cart = true
+
+  }) 
 }
 // const test:Promise<void> = new Promise((resolve, reject) => {
 //   if (localStorage.getItem('options')) {
