@@ -43,6 +43,7 @@ export class OptionsPanel extends Component {
   public productsByBrand: string[] = []
   public _brands: string[] = []
   private _currentBrand= ""
+  public brand = ''
 
   constructor() {
     super()
@@ -54,7 +55,6 @@ export class OptionsPanel extends Component {
   set rating(value: string | number) {
     const input = this.ratingInput as HTMLInputElement
     input.value = value.toString() || ''
-    this.dispatchEvent(new OptionsUpdateEvent({rating: +input.value}))
   }
 
 
@@ -102,13 +102,15 @@ export class OptionsPanel extends Component {
   reset() {
     const {
       rating,
-      search
+      search,
+      brand,
     } = this.defaultOptions
     this.rating = rating
     this.search = search
+    this.brand = brand
     const output = this.outPut as HTMLOutputElement
     output.value = '1'
-    this.dispatchEvent(new OptionsUpdateEvent({search, rating}))
+    this.dispatchEvent(new OptionsUpdateEvent({search, rating, brand}))
   }
   render() {
     this.shadow.innerHTML=
