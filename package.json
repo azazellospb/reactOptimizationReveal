@@ -1,6 +1,0 @@
-{
-  "devDependencies": {
-    "html-webpack-link-type-plugin": "^1.1.1",
-    "mini-css-extract-plugin": "^2.6.1"
-  }
-}
