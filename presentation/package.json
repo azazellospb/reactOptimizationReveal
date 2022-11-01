@@ -2,7 +2,7 @@
   "name": "reveal.js",
   "version": "4.3.1",
   "description": "The HTML Presentation Framework",
-  "homepage": "https://revealjs.com",
+  "homepage": "https://azazellospb.github.io",
   "subdomain": "revealjs",
   "main": "dist/reveal.js",
   "module": "dist/reveal.esm.js",
@@ -10,7 +10,8 @@
   "scripts": {
     "test": "gulp test",
     "start": "gulp serve",
-    "build": "gulp build"
+    "build": "gulp build",
+    "deploy": "gh-pages -b master -d dist"
   },
   "author": {
     "name": "Hakim El Hattab",
@@ -40,6 +41,7 @@
     "colors": "^1.4.0",
     "core-js": "^3.12.1",
     "fitty": "^2.3.0",
+    "gh-pages": "^4.0.0",
     "glob": "^7.1.7",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^8.0.0",
